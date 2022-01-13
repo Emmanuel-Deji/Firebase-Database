@@ -1,0 +1,153 @@
+<html>
+<head>
+ <title>Cygnusspin Internship Staff</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+ <link rel="stylesheet" href="./style.css"> 
+ <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+ <script>
+   // Initialize Firebase
+   var config = {
+    apiKey: "AIzaSyBEQ4nUKgA_8nYXQhfVM6bT0Q5iHxXwtho",
+  authDomain: "cygnusspin-internship-staff.firebaseapp.com"   ,
+  databaseURL: "https://cygnusspin-internship-staff-default-rtdb.firebaseio.com",
+  projectId: "cygnusspin-internship-staff",
+  storageBucket: "cygnusspin-internship-staff.appspot.com",
+  messagingSenderId: "249814012478",
+  appId: "1:249814012478:web:e1bd3c78edd247b49b776f",
+  measurementId: "G-C9DLJEY292"
+   };
+
+   firebase.initializeApp(config);
+ </script>
+</head>
+
+<body>
+<main>
+ <table class="form">
+  <!-- <tr>
+   <td>Id: </td>
+   <td><input type="text" name="id" id="user_id" /></td>
+  </tr> -->
+  <tr>
+   <td>User ID: </td>
+   <td><input type="text" name="user_name" id="id" placeholder="userid" /></td>
+  </tr>
+  <tr>
+   <td>first Name: </td>
+   <td><input type="text" name="user_name" id="firstname" placeholder="firstname" /></td>
+  </tr>
+  <tr>
+   <td>last Name: </td>
+   <td><input type="text" name="user_name" id="lastname" placeholder="lastname"/></td>
+  </tr>
+  <tr>
+   <td>salary: </td>
+   <td><input type="text" name="user_name" id="salary" placeholder="salary" /></td>
+  </tr>
+  <tr class="button">
+   <td colspan="2">
+    <input type="button" class="btn waves-effect waves-effect waves-light" value="Save" onclick="save_user();" />
+    <input type="button" class="btn waves-effect waves-effect waves-light" value="Update" onclick="update_user();" />
+    <input type="button" class="btn waves-effect waves-effect red darken-1" value="Delete" onclick="delete_user();" />
+   </td>
+  </tr>
+ </table>
+ 
+ <h3>Users List</h3>
+ 
+ <table class="form" id="tbl_users_list" border="1">
+  <tr>
+   <td>#ID</td>
+   <td>FIRSTNAME</td>
+   <td>LASTNAME</td>
+   <td>SALARY</td>
+  </tr>
+ </table>
+</main>
+ 
+ <script>
+ 
+  var tblUsers = document.getElementById('tbl_users_list');
+  var databaseRef = firebase.database().ref('users/');
+  var rowIndex = 1;
+  
+  databaseRef.once('value', function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+   var childKey = childSnapshot.key;
+   var childData = childSnapshot.val();
+   
+   var row = tblUsers.insertRow(rowIndex);
+   var cellId = row.insertCell(0);
+   var firstlame = row.insertCell(1);
+   var lastname = row.insertCell(2);
+   var salary = row.insertCell(3);
+   cellId.appendChild(document.createTextNode(childKey));
+   Firstname.appendChild(document.createTextNode(childData.firstname));
+   lastname.appendChild(document.createTextNode(childData.lastname));
+   salary.appendChild(document.createTextNode(childData.salary));
+   
+   rowIndex = rowIndex + 1;
+    });
+  });
+   
+  function save_user(){
+   var userid = document.getElementById('id').value;
+   var firstname = document.getElementById('firstname').value;
+   var lastname = document.getElementById('lastname').value;
+   var salary = document.getElementById('salary').value;
+  
+   var uid = firebase.database().ref().child('users').push().key;
+   
+   var data = {
+    user_id: userid,
+    firstname,
+    lastname,
+    salary
+   }
+   
+   var updates = {};
+   updates['/users/' + userid] = data;
+   firebase.database().ref().update(updates);
+   
+   alert('The user is created successfully!');
+   reload_page();
+  }
+  
+  function update_user(){
+   var user_id = document.getElementById('id').value;
+   var firstname = document.getElementById('firstname').value;
+   var lastname = document.getElementById('lastname').value;
+   var salary = document.getElementById('salary').value;
+
+   var data = {
+    user_id: user_id,
+    firstname,
+    lastname,
+    salary
+    }
+   
+   var updates = {};
+   updates['/users/' + user_id] = data;
+   firebase.database().ref().update(updates);
+   
+   alert('The user is updated successfully!');
+   
+   reload_page();
+  }
+  
+  function delete_user(){
+   var user_id = document.getElementById('id').value;
+  
+   firebase.database().ref().child('/users/' + user_id).remove();
+   alert('The user is deleted successfully!');
+   reload_page();
+  }
+  
+  function reload_page(){
+   window.location.reload();
+  }
+  
+ </script>
+ 
+</body>
+</html>
